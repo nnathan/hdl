@@ -401,6 +401,67 @@ int main(int argc, char **argv) {
         assert(i == el_n);
         free(el);
     }
+    // --- (40,10) (21,37) (94,4) (67,11) (0,65) (34,59) (98,1)F (93,1)
+    {
+        struct hole_descriptor_list *hdl;
+        hole_descriptor_list_init(&hdl);
+        assert(hdl != NULL);
+        const int n = 8;
+        struct fragment *l = calloc(n, sizeof(struct fragment));
+        l[0].offset = 40;
+        l[0].len = 10;
+        l[1].offset = 21;
+        l[1].len = 37;
+        l[2].offset = 94;
+        l[2].len = 4;
+        l[3].offset = 67;
+        l[3].len = 11;
+        l[4].offset = 0;
+        l[4].len = 65;
+        l[5].offset = 34;
+        l[5].len = 59;
+        l[6].offset = 98;
+        l[6].len = 1;
+        l[6].final = true;
+        l[7].offset = 93;
+        l[7].len = 1;
 
+        PRINT_FRAGS(l, n);
+
+        for (int i=0; i<n; i++) {
+            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+        }
+
+        free(l);
+
+        assert(hole_descriptor_list_complete(hdl));
+
+        const int el_n = 8;
+        struct fragment *el = calloc(el_n, sizeof(struct fragment));
+        el[0].offset = 0;
+        el[0].len = 65;
+        el[1].offset = 21;
+        el[1].len = 37;
+        el[2].offset = 34;
+        el[2].len = 59;
+        el[3].offset = 40;
+        el[3].len = 10;
+        el[4].offset = 67;
+        el[4].len = 11;
+        el[5].offset = 93;
+        el[5].len = 1;
+        el[6].offset = 94;
+        el[6].len = 4;
+        el[7].offset = 98;
+        el[7].len = 1;
+
+        int i = 0;
+        for (struct frag_list *fl = hdl->frag_head; fl; fl = fl->next, i++) {
+            assert(fl->offset == el[i].offset);
+            assert(fl->len == el[i].len);
+        }
+        assert(i == el_n);
+        free(el);
+    }
     return 0;
 }

@@ -160,11 +160,16 @@ static bool insert_frag(
         return true;
     }
 
+    struct frag_list *prev = NULL;
     while (fl) {
         if (offset < fl->offset || (offset == fl->offset && len > fl->len)) {
             struct frag_list *l = malloc(sizeof(struct frag_list));
             if (!l) return false;
-            hdl->frag_head = l;
+            if (!prev) {
+                hdl->frag_head = l;
+            } else {
+                prev->next = l;
+            }
             l->next = fl;
             l->frag = frag;
             l->len = len;
@@ -173,6 +178,7 @@ static bool insert_frag(
         }
 
         if (fl->next) {
+            prev = fl;
             fl = fl->next;
             continue;
         }
