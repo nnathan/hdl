@@ -92,6 +92,7 @@ bool hole_descriptor_list_add(
             if (hdl->next->first <= offset + len) {
                 hdl->last = offset - 1;
                 hdl->next->first = offset + len;
+                hdl->next->last = final ? offset + len : hdl->next->last;
                 if (!insert_frag(hdl->next, offset, len, frag)) return false;
                 coalesce(hdl->next, final);
                 return true;

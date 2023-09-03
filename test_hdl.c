@@ -359,6 +359,48 @@ int main(int argc, char **argv) {
         assert(i == el_n);
         free(el);
     }
+    // --- (20,10) (14,86)F (0,20)
+    {
+        struct hole_descriptor_list *hdl;
+        hole_descriptor_list_init(&hdl);
+        assert(hdl != NULL);
+        const int n = 3;
+        struct fragment *l = calloc(n, sizeof(struct fragment));
+        l[0].offset = 20;
+        l[0].len = 10;
+        l[1].offset = 14;
+        l[1].len = 86;
+        l[1].final = true;
+        l[2].offset = 0;
+        l[2].len = 20;
+
+        PRINT_FRAGS(l, n);
+
+        for (int i=0; i<n; i++) {
+            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+        }
+
+        free(l);
+
+        assert(hole_descriptor_list_complete(hdl));
+
+        const int el_n = 3;
+        struct fragment *el = calloc(el_n, sizeof(struct fragment));
+        el[0].offset = 0;
+        el[0].len = 20;
+        el[1].offset = 14;
+        el[1].len = 86;
+        el[2].offset = 20;
+        el[2].len = 10;
+
+        int i = 0;
+        for (struct frag_list *fl = hdl->frag_head; fl; fl = fl->next, i++) {
+            assert(fl->offset == el[i].offset);
+            assert(fl->len == el[i].len);
+        }
+        assert(i == el_n);
+        free(el);
+    }
 
     return 0;
 }
