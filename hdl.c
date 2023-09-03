@@ -12,23 +12,24 @@
 #define ASSERT(expr)
 #endif
 
-bool hole_descriptor_list_init(struct hole_descriptor_list *hdl) {
-    hdl->size = INT32_MAX;
-    hdl->head = malloc(sizeof(struct hole));
-    if (!hdl->head) return false;
-    hdl->head->first = 0;
-    hdl->head->last = INT32_MAX;
-    hdl->head->data_head = hdl->head->data_tail = NULL;
-    hdl->head->next = NULL;
-    return true;
+bool hole_descriptor_list_init(struct hole_descriptor_list **hdl) {
+    *hdl = calloc(1, sizeof(struct hole_descriptor_list));
+    (*hdl)->last = INT32_MAX;
+    return (*hdl != NULL);
 }
 
 bool hole_descriptor_list_complete(struct hole_descriptor_list *hdl) {
-    return (hdl->head->first >= hdl->head->last);
+    return (hdl->first >= hdl->last);
 }
 
-static bool insert_hole_data(struct hole *h, int32_t offset, int32_t len, void *frag);
-static void coalesce(struct hole *h);
+static bool insert_hole_data(
+    struct hole_descriptor_list *hdl,
+    int32_t offset,
+    int32_t len,
+    void *frag
+);
+
+static void coalesce(struct hole_descriptor_list *hdl);
 
 bool hole_descriptor_list_add(
     struct hole_descriptor_list *hdl,
@@ -39,13 +40,11 @@ bool hole_descriptor_list_add(
 ) {
     ASSERT(offset + len > offset);
 
-    struct hole *h = hdl->head;
-
     int32_t last = offset + len - 1;
 
-    while (h != NULL) {
-        if (offset > h->last) {
-            h = h->next;
+    while (hdl != NULL) {
+        if (offset > hdl->last) {
+            hdl = hdl->next;
             continue;
         }
 
@@ -54,63 +53,63 @@ bool hole_descriptor_list_add(
          *     last > offset > h->last >= h->first
          * which means last is always greater than h->first
          */
-        if (last < h->first) {
-            h = h->next;
+        if (last < hdl->first) {
+            hdl = hdl->next;
             continue;
         }
 
         if (final) {
-            h->last = offset + len;
+            hdl->last = offset + len;
         }
 
-        if (offset < h->first) {
+        if (offset < hdl->first) {
              /*
              * insert (5,6)
              * (0,10) [10, 14] (15, 5) (20, 10) [30, 30]
              * (0,10) (5,6) [11, 14] (15, 5) (20, 10) [30, 30]
              */
-            if (offset + len > h->first) h->first = offset + len;
-            if (!insert_hole_data(h, offset, len, frag)) return false;
-            coalesce(h);
+            if (offset + len > hdl->first) hdl->first = offset + len;
+            if (!insert_hole_data(hdl, offset, len, frag)) return false;
+            coalesce(hdl);
             return true;
         }
 
-        if (offset == h->first) {
-            h->first = offset + len;
-            if (!insert_hole_data(h, offset, len, frag)) return false;
-            coalesce(h);
+        if (offset == hdl->first) {
+            hdl->first = offset + len;
+            if (!insert_hole_data(hdl, offset, len, frag)) return false;
+            coalesce(hdl);
             return true;
         }
 
-        ASSERT(offset > h->first);
-        if (h->next) {
+        ASSERT(offset > hdl->first);
+        if (hdl->next) {
             /*
              * insert (15,5)
              * (0,10) [10, 19] (20, 10) [30, 30]
              * (0,10) [10, 14] (15, 5) (20, 10) [30, 30]
              */
 
-            if (h->next->first <= offset + len) {
-                h->last = offset - 1;
-                h->next->first = offset + len;
-                if (!insert_hole_data(h->next, offset, len, frag)) return false;
-                coalesce(h);
-                coalesce(h->next);
+            if (hdl->next->first <= offset + len) {
+                hdl->last = offset - 1;
+                hdl->next->first = offset + len;
+                if (!insert_hole_data(hdl->next, offset, len, frag)) return false;
+                coalesce(hdl);
+                coalesce(hdl->next);
                 return true;
             }
 
 
-            ASSERT(h->next->first > offset + len);
-            struct hole *nh = malloc(sizeof(struct hole));
+            ASSERT(hdl->next->first > offset + len);
+            struct hole_descriptor_list *nh = calloc(1, sizeof(struct hole_descriptor_list));
             if (!nh) return false;
-            nh->next = h->next;
-            h->next = nh;
+            nh->next = hdl->next;
+            hdl->next = nh;
             nh->first = offset + len;
-            nh->last = h->last;
-            h->last = offset - 1;
+            nh->last = hdl->last;
+            hdl->last = offset - 1;
             nh->data_head = nh->data_tail = NULL;
             if (!insert_hole_data(nh, offset, len, frag)) return false;
-            coalesce(h);
+            coalesce(hdl);
             coalesce(nh);
             return true;
         }
@@ -120,39 +119,44 @@ bool hole_descriptor_list_add(
          * [0,20]
          * [0,14] (15,5) [20,20]
          */
-        h->next = malloc(sizeof(struct hole));
-        if (!h->next) return false;
-        h->last = offset - 1;
-        h->next->first = offset + len;
-        h->next->last = final ? offset + len : INT32_MAX;
-        return insert_hole_data(h->next, offset, len, frag);
+        hdl->next = calloc(1, sizeof(struct hole_descriptor_list));
+        if (!hdl->next) return false;
+        hdl->last = offset - 1;
+        hdl->next->first = offset + len;
+        hdl->next->last = final ? offset + len : INT32_MAX;
+        return insert_hole_data(hdl->next, offset, len, frag);
     }
 
     return true;
 }
 
-static void coalesce(struct hole *h) {
-    while (h && h->next && h->first >= h->last) {
-        h->first = (h->next->first > h->first) ? h->next->first : h->first;
-        h->last = h->next->last;
-        h->data_tail->next = h->next->data_head;
-        struct hole *t = h->next;
-        h->next = h->next->next;
+static void coalesce(struct hole_descriptor_list *hdl) {
+    while (hdl && hdl->next && hdl->first >= hdl->last) {
+        hdl->first = (hdl->next->first > hdl->first) ? hdl->next->first : hdl->first;
+        hdl->last = hdl->next->last;
+        hdl->data_tail->next = hdl->next->data_head;
+        struct hole_descriptor_list *t = hdl->next;
+        hdl->next = hdl->next->next;
         free(t);
-        h = h->next;
+        hdl = hdl->next;
     }
 }
 
-static bool insert_hole_data(struct hole *h, int32_t offset, int32_t len, void *frag) {
-    struct hole_data *hd = h->data_head;
+static bool insert_hole_data(
+    struct hole_descriptor_list *hdl,
+    int32_t offset,
+    int32_t len,
+    void *frag
+) {
+    struct hole_data *hd = hdl->data_head;
 
     if (!hd) {
-        h->data_head = h->data_tail = malloc(sizeof(struct hole_data));
-        if (!h->data_head) return false;
-        h->data_head->next = NULL;
-        h->data_head->frag = frag;
-        h->data_head->len = len;
-        h->data_head->offset = offset;
+        hdl->data_head = hdl->data_tail = malloc(sizeof(struct hole_data));
+        if (!hdl->data_head) return false;
+        hdl->data_head->next = NULL;
+        hdl->data_head->frag = frag;
+        hdl->data_head->len = len;
+        hdl->data_head->offset = offset;
         return true;
     }
 
@@ -160,7 +164,7 @@ static bool insert_hole_data(struct hole *h, int32_t offset, int32_t len, void *
         if (offset < hd->offset || (offset == hd->offset && len > hd->len)) {
             struct hole_data *d = malloc(sizeof(struct hole_data));
             if (!d) return false;
-            h->data_head = d;
+            hdl->data_head = d;
             d->next = hd;
             d->frag = frag;
             d->len = len;
@@ -176,7 +180,7 @@ static bool insert_hole_data(struct hole *h, int32_t offset, int32_t len, void *
         struct hole_data *d = malloc(sizeof(struct hole_data));
         if (!d) return false;
         hd->next = d;
-        h->data_tail = d;
+        hdl->data_tail = d;
         d->next = NULL;
         d->frag = frag;
         d->len = len;
@@ -188,20 +192,18 @@ static bool insert_hole_data(struct hole *h, int32_t offset, int32_t len, void *
 }
 
 void print_hole_descriptor_list(struct hole_descriptor_list *hdl) {
-    struct hole *h = hdl->head;
-
-    if (!h) {
+    if (!hdl) {
         printf("<empty>\n");
     }
 
-    while (h) {
-        printf("%10s: %10d\n", "first", h->first);
-        printf("%10s: %10d\n", "last", h->last);
+    while (hdl) {
+        printf("%10s: %10d\n", "first", hdl->first);
+        printf("%10s: %10d\n", "last", hdl->last);
 
-        for (struct hole_data *hd = h->data_head; hd != NULL; hd = hd->next) {
+        for (struct hole_data *hd = hdl->data_head; hd != NULL; hd = hd->next) {
             printf("%10s (%d,%d)\n", "--", hd->offset, hd->len);
         }
 
-        h = h->next;
+        hdl = hdl->next;
     }
 }

@@ -11,20 +11,15 @@ struct hole_data {
     int32_t offset;
 };
 
-struct hole {
-    struct hole *next;
+struct hole_descriptor_list {
+    struct hole_descriptor_list *next;
     int32_t first;
     int32_t last;
     struct hole_data *data_head;
     struct hole_data *data_tail;
 };
 
-struct hole_descriptor_list {
-    struct hole *head;
-    int32_t size;
-};
-
-bool hole_descriptor_list_init(struct hole_descriptor_list *hdl);
+bool hole_descriptor_list_init(struct hole_descriptor_list **hdl);
 
 bool hole_descriptor_list_add(
     struct hole_descriptor_list *hdl,
