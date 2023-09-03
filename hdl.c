@@ -29,7 +29,7 @@ static bool insert_frag(
     void *frag
 );
 
-static void coalesce(struct hole_descriptor_list *hdl);
+static void coalesce(struct hole_descriptor_list *hdl, bool final);
 
 bool hole_descriptor_list_add(
     struct hole_descriptor_list *hdl,
@@ -70,14 +70,14 @@ bool hole_descriptor_list_add(
              */
             if (offset + len > hdl->first) hdl->first = offset + len;
             if (!insert_frag(hdl, offset, len, frag)) return false;
-            coalesce(hdl);
+            coalesce(hdl, final);
             return true;
         }
 
         if (offset == hdl->first) {
             hdl->first = offset + len;
             if (!insert_frag(hdl, offset, len, frag)) return false;
-            coalesce(hdl);
+            coalesce(hdl, final);
             return true;
         }
 
@@ -93,8 +93,7 @@ bool hole_descriptor_list_add(
                 hdl->last = offset - 1;
                 hdl->next->first = offset + len;
                 if (!insert_frag(hdl->next, offset, len, frag)) return false;
-                coalesce(hdl);
-                coalesce(hdl->next);
+                coalesce(hdl->next, final);
                 return true;
             }
 
@@ -109,8 +108,8 @@ bool hole_descriptor_list_add(
             hdl->last = offset - 1;
             nh->frag_head = nh->frag_tail = NULL;
             if (!insert_frag(nh, offset, len, frag)) return false;
-            coalesce(hdl);
-            coalesce(nh);
+            coalesce(hdl, false);
+            coalesce(nh, final);
             return true;
         }
 
@@ -130,8 +129,8 @@ bool hole_descriptor_list_add(
     return true;
 }
 
-static void coalesce(struct hole_descriptor_list *hdl) {
-    while (hdl->next && hdl->first >= hdl->last) {
+static void coalesce(struct hole_descriptor_list *hdl, bool final) {
+    while (hdl->next && (final ? hdl->first >= hdl->last : hdl->first > hdl->last)) {
         hdl->first = (hdl->next->first > hdl->first) ? hdl->next->first : hdl->first;
         hdl->last = (hdl->next->last > hdl->last) ? hdl->next->last : hdl->last;
         hdl->frag_tail->next = hdl->next->frag_head;
