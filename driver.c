@@ -2,6 +2,13 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#define HDL_ADD(hdl, off, len, final, verbose)                       \
+  do {                                                               \
+    printf("--- inserting (%d,%d)%s\n", off, len, final ? "F" : ""); \
+    hole_descriptor_list_add(hdl, off, len, final, NULL);            \
+    if (verbose) print_hole_descriptor_list(hdl);                    \
+  } while(0)
+
 int main(int argc, char **argv) {
     struct hole_descriptor_list *hdl;
 
@@ -10,40 +17,16 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    hole_descriptor_list_add(hdl, 0, 100, false, NULL);
-    print_hole_descriptor_list(hdl);
-    printf("---\n");
-    hole_descriptor_list_add(hdl, 20, 100, false, NULL);
-    print_hole_descriptor_list(hdl);
-    printf("---\n");
-    hole_descriptor_list_add(hdl, 180, 20, true, NULL);
-    print_hole_descriptor_list(hdl);
-    printf("---\n");
-    hole_descriptor_list_add(hdl, 150, 40, false, NULL);
-    print_hole_descriptor_list(hdl);
-    printf("---\n");
-    hole_descriptor_list_add(hdl, 10, 170, false, NULL);
-    print_hole_descriptor_list(hdl);
-    printf("---\n");
-    hole_descriptor_list_add(hdl, 50, 10, false, NULL);
-    print_hole_descriptor_list(hdl);
-    printf("---\n");
-    hole_descriptor_list_add(hdl, 0, 205, false, NULL);
-    print_hole_descriptor_list(hdl);
-    printf("---\n");
+    HDL_ADD(hdl, 69, 22, false, false);
+    HDL_ADD(hdl, 75, 16, false, false);
+    HDL_ADD(hdl, 80, 10, false, false);
+    HDL_ADD(hdl, 81, 12, false, false);
+    HDL_ADD(hdl, 59, 23, false, false);
+    HDL_ADD(hdl, 30, 10, false, false);
+    HDL_ADD(hdl, 63, 34, false, false);
+    HDL_ADD(hdl, 87, 9, false, false);
+    HDL_ADD(hdl, 13, 32, false, false);
+    HDL_ADD(hdl, 44, 56, true, true);
 
-    //hole_descriptor_list_add(hdl, 150, 10, false, NULL);
-    //print_hole_descriptor_list(hdl);
-    //printf("---\n");
-    //hole_descriptor_list_add(hdl, 160, 25, false, NULL);
-    //print_hole_descriptor_list(hdl);
-    //printf("---\n");
-    //hole_descriptor_list_add(hdl, 130, 5, false, NULL);
-    //print_hole_descriptor_list(hdl);
-    //printf("---\n");
-    //hole_descriptor_list_add(hdl, 135, 15, false, NULL);
-    //print_hole_descriptor_list(hdl);
-    //printf("---\n");
-    //hole_descriptor_list_add(hdl, 120, 10, false, NULL);
-    //print_hole_descriptor_list(hdl);
+  return 0;
 }
