@@ -169,6 +169,8 @@ int main(int argc, char **argv) {
 
         free(l);
 
+        assert(hole_descriptor_list_complete(hdl));
+
         const int el_n = 5;
         struct fragment *el = calloc(el_n, sizeof(struct fragment));
         for (int i=0; i < n; i++) {
@@ -211,6 +213,8 @@ int main(int argc, char **argv) {
         }
 
         free(l);
+
+        assert(hole_descriptor_list_complete(hdl));
 
         const int el_n = 4;
         struct fragment *el = calloc(el_n, sizeof(struct fragment));
@@ -256,6 +260,8 @@ int main(int argc, char **argv) {
 
         free(l);
 
+        assert(hole_descriptor_list_complete(hdl));
+
         const int el_n = 4;
         struct fragment *el = calloc(el_n, sizeof(struct fragment));
         el[0].offset = 0;
@@ -296,6 +302,8 @@ int main(int argc, char **argv) {
 
         free(l);
 
+        assert(hole_descriptor_list_complete(hdl));
+
         const int el_n = 2;
         struct fragment *el = calloc(el_n, sizeof(struct fragment));
         el[0].offset = 0;
@@ -333,6 +341,8 @@ int main(int argc, char **argv) {
         }
 
         free(l);
+
+        assert(hole_descriptor_list_complete(hdl));
 
         const int el_n = 2;
         struct fragment *el = calloc(el_n, sizeof(struct fragment));
