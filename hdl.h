@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-struct hole_data {
-    struct hole_data *next;
+struct frag_list {
+    struct frag_list *next;
     void *frag;
     int32_t len;
     int32_t offset;
@@ -15,8 +15,8 @@ struct hole_descriptor_list {
     struct hole_descriptor_list *next;
     int32_t first;
     int32_t last;
-    struct hole_data *data_head;
-    struct hole_data *data_tail;
+    struct frag_list *frag_head;
+    struct frag_list *frag_tail;
 };
 
 bool hole_descriptor_list_init(struct hole_descriptor_list **hdl);
