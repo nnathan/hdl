@@ -1,16 +1,7 @@
 #include "hdl.h"
 #include <stdio.h>
 #include <stdlib.h>
-
-// Source: skeeto/handmade hero
-#ifdef DEBUG
-#define ASSERT(expr)             \
-    if (!(expr)) {               \
-        *(volatile int *) 0 = 0; \
-    }
-#else
-#define ASSERT(expr)
-#endif
+#include <assert.h>
 
 bool hole_descriptor_list_init(struct hole_descriptor_list **hdl) {
     *hdl = calloc(1, sizeof(struct hole_descriptor_list));
@@ -38,7 +29,7 @@ bool hole_descriptor_list_add(
     bool final,
     void *frag
 ) {
-    ASSERT(offset + len > offset);
+    assert(offset + len > offset);
 
     int32_t last = offset + len - 1;
 
@@ -48,10 +39,8 @@ bool hole_descriptor_list_add(
             continue;
         }
 
-        /* although specified in RFC815 this case doesn't
-         * seem to make sense since:
-         *     last > offset > h->last >= h->first
-         * which means last is always greater than h->first
+        /*
+         * suppress already seen or duplicate fragments
          */
         if (last < hdl->first) {
             hdl = hdl->next;
@@ -63,11 +52,6 @@ bool hole_descriptor_list_add(
         }
 
         if (offset < hdl->first) {
-             /*
-             * insert (5,6)
-             * (0,10) [10, 14] (15, 5) (20, 10) [30, 30]
-             * (0,10) (5,6) [11, 14] (15, 5) (20, 10) [30, 30]
-             */
             if (offset + len > hdl->first) hdl->first = offset + len;
             if (!insert_frag(hdl, offset, len, frag)) return false;
             coalesce(hdl, final);
@@ -81,14 +65,8 @@ bool hole_descriptor_list_add(
             return true;
         }
 
-        ASSERT(offset > hdl->first);
+        assert(offset > hdl->first);
         if (hdl->next) {
-            /*
-             * insert (15,5)
-             * (0,10) [10, 19] (20, 10) [30, 30]
-             * (0,10) [10, 14] (15, 5) (20, 10) [30, 30]
-             */
-
             if (hdl->next->first <= offset + len) {
                 hdl->last = offset - 1;
                 hdl->next->first = offset + len;
@@ -99,7 +77,7 @@ bool hole_descriptor_list_add(
             }
 
 
-            ASSERT(hdl->next->first > offset + len);
+            assert(hdl->next->first > offset + len);
             struct hole_descriptor_list *nh = calloc(1, sizeof(struct hole_descriptor_list));
             if (!nh) return false;
             nh->next = hdl->next;
@@ -114,11 +92,6 @@ bool hole_descriptor_list_add(
             return true;
         }
 
-        /*
-         * insert (15,5)
-         * [0,20]
-         * [0,14] (15,5) [20,20]
-         */
         hdl->next = calloc(1, sizeof(struct hole_descriptor_list));
         if (!hdl->next) return false;
         hdl->last = offset - 1;
@@ -142,6 +115,14 @@ static void coalesce(struct hole_descriptor_list *hdl, bool final) {
     }
 }
 
+#define SET_FRAG_LIST(fl, next_, frag, len, off) \
+  do {                                           \
+    fl->next = next_;                            \
+    fl->frag = frag;                             \
+    fl->len = len;                               \
+    fl->off = off;                               \
+  } while(0)
+
 static bool insert_frag(
     struct hole_descriptor_list *hdl,
     int32_t offset,
@@ -153,10 +134,7 @@ static bool insert_frag(
     if (!fl) {
         hdl->frag_head = hdl->frag_tail = malloc(sizeof(struct frag_list));
         if (!hdl->frag_head) return false;
-        hdl->frag_head->next = NULL;
-        hdl->frag_head->frag = frag;
-        hdl->frag_head->len = len;
-        hdl->frag_head->offset = offset;
+        SET_FRAG_LIST(hdl->frag_head, NULL, frag, len, offset);
         return true;
     }
 
@@ -170,10 +148,7 @@ static bool insert_frag(
             } else {
                 prev->next = l;
             }
-            l->next = fl;
-            l->frag = frag;
-            l->len = len;
-            l->offset = offset;
+            SET_FRAG_LIST(l, fl, frag, len, offset);
             break;
         }
 
@@ -187,10 +162,7 @@ static bool insert_frag(
         if (!l) return false;
         fl->next = l;
         hdl->frag_tail = l;
-        l->next = NULL;
-        l->frag = frag;
-        l->len = len;
-        l->offset = offset;
+        SET_FRAG_LIST(l, NULL, frag, len, offset);
         break;
     }
 
