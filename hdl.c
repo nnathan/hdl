@@ -131,14 +131,14 @@ bool hole_descriptor_list_add(
 }
 
 static void coalesce(struct hole_descriptor_list *hdl) {
-    while (hdl && hdl->next && hdl->first >= hdl->last) {
+    while (hdl->next && hdl->first >= hdl->last) {
         hdl->first = (hdl->next->first > hdl->first) ? hdl->next->first : hdl->first;
-        hdl->last = hdl->next->last;
+        hdl->last = (hdl->next->last > hdl->last) ? hdl->next->last : hdl->last;
         hdl->frag_tail->next = hdl->next->frag_head;
+        hdl->frag_tail = hdl->next->frag_tail;
         struct hole_descriptor_list *t = hdl->next;
         hdl->next = hdl->next->next;
         free(t);
-        hdl = hdl->next;
     }
 }
 
