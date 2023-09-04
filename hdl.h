@@ -36,4 +36,6 @@ void hole_descriptor_list_walk(
     void (caller)(void *caller_ctx, const void *data, const int32_t offset, const int32_t len),
     void *caller_ctx
 );
+
+void hole_descriptor_list_destroy(struct hole_descriptor_list *hdl);
 #endif

@@ -63,6 +63,7 @@ int main(int argc, char **argv) {
         }
         assert(i == el_n);
         free(el);
+        hole_descriptor_list_destroy(hdl);
     }
     // --- (0,0) (0,1)F
     {
@@ -99,6 +100,7 @@ int main(int argc, char **argv) {
         }
         assert(i == el_n);
         free(el);
+        hole_descriptor_list_destroy(hdl);
     }
 
     // --- (0,5) (1,2) (5,1)F
@@ -140,6 +142,7 @@ int main(int argc, char **argv) {
         }
         assert(i == el_n);
         free(el);
+        hole_descriptor_list_destroy(hdl);
     }
     // --- (0,1) (1,1) (2,1) (3,1) (4,1)F
     {
@@ -178,6 +181,7 @@ int main(int argc, char **argv) {
         }
         assert(i == el_n);
         free(el);
+        hole_descriptor_list_destroy(hdl);
     }
     // --- (1,1) (3,1) (4,1)F (2,1) (0,1)
     {
@@ -222,6 +226,7 @@ int main(int argc, char **argv) {
         }
         assert(i == el_n);
         free(el);
+        hole_descriptor_list_destroy(hdl);
     }
     // --- (7,3)F (4,6)F (1,9)F (0,10)F
     {
@@ -271,6 +276,7 @@ int main(int argc, char **argv) {
         }
         assert(i == el_n);
         free(el);
+        hole_descriptor_list_destroy(hdl);
     }
     // --- (10,10) (0,5) (40,50)F (2,50)
     {
@@ -317,6 +323,7 @@ int main(int argc, char **argv) {
         }
         assert(i == el_n);
         free(el);
+        hole_descriptor_list_destroy(hdl);
     }
     // --- (180,20)F (0,205)
     {
@@ -355,6 +362,7 @@ int main(int argc, char **argv) {
         }
         assert(i == el_n);
         free(el);
+        hole_descriptor_list_destroy(hdl);
     }
     // --- (0,2) (0,2) (2,1)F
     {
@@ -395,6 +403,7 @@ int main(int argc, char **argv) {
         }
         assert(i == el_n);
         free(el);
+        hole_descriptor_list_destroy(hdl);
     }
     // --- (20,10) (14,86)F (0,20)
     {
@@ -437,6 +446,7 @@ int main(int argc, char **argv) {
         }
         assert(i == el_n);
         free(el);
+        hole_descriptor_list_destroy(hdl);
     }
     // --- (40,10) (21,37) (94,4) (67,11) (0,65) (34,59) (98,1)F (93,1)
     {
@@ -499,6 +509,7 @@ int main(int argc, char **argv) {
         }
         assert(i == el_n);
         free(el);
+        hole_descriptor_list_destroy(hdl);
     }
     // --- (0,60) (95,4) (50,50)F
     {
@@ -541,6 +552,7 @@ int main(int argc, char **argv) {
         }
         assert(i == el_n);
         free(el);
+        hole_descriptor_list_destroy(hdl);
     }
 
     return 0;

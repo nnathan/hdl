@@ -52,6 +52,7 @@ int main(int argc, char **argv) {
     HDL_ADD(hdl, 0, 13, false, true);
     assert(hole_descriptor_list_complete(hdl));
     hole_descriptor_list_walk(hdl, print_frag, NULL);
+    hole_descriptor_list_destroy(hdl);
 
   return 0;
 }

@@ -145,3 +145,18 @@ void hole_descriptor_list_walk(
         hdl = hdl->next;
     }
 }
+
+void hole_descriptor_list_destroy(struct hole_descriptor_list *hdl) {
+    while (hdl) {
+        struct frag_list *fl = hdl->frag_head;
+        while (fl) {
+            struct frag_list *t = fl;
+            fl = fl->next;
+            free(t);
+        }
+
+        struct hole_descriptor_list *t = hdl;
+        hdl = hdl->next;
+        free(t);
+    }
+}
