@@ -111,7 +111,7 @@ static bool insert_frag(
 
     struct frag_list *prev = NULL;
     while (fl) {
-        if (offset < fl->offset || (offset == fl->offset && len > fl->len)) {
+        if (offset <= fl->offset) {
             struct frag_list *l = malloc(sizeof(struct frag_list));
             if (!l) return false;
             if (!prev)
