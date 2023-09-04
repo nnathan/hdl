@@ -5,8 +5,9 @@
 
 bool hole_descriptor_list_init(struct hole_descriptor_list **hdl) {
     *hdl = calloc(1, sizeof(struct hole_descriptor_list));
+    if (*hdl == NULL) return false;
     (*hdl)->last = INT32_MAX;
-    return (*hdl != NULL);
+    return true;
 }
 
 bool hole_descriptor_list_complete(struct hole_descriptor_list *hdl) {
