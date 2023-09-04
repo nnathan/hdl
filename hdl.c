@@ -130,7 +130,6 @@ static bool insert_frag(
     prev->next = l;
     hdl->frag_tail = l;
     SET_FRAG_LIST(l, NULL, frag, len, offset);
-
     return true;
 }
 
