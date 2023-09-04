@@ -1,11 +1,9 @@
 # Hole Descriptor List
 
-Implementation of the "Hole Descriptor List" explained in
-[IP DATAGRAM REASSEMBLY ALGORITHMS (RFC815)](https://datatracker.ietf.org/doc/html/rfc815).
+In IP networks, all hosts must support what is known as fragmentation & reassembly. That is large packets exceeding the underlying maximum packet size for a link is packetized into smaller packets sized for the link, known as IP fragments.
 
-This design includes buffering fragments
-which doesn't seem apparent in the RFC.
-Overlapping fragments are supported.
-Duplicate / already buffered fragments are discarded.
+Well it turns out theres a really nice data structure called a Hole Descriptor List which sorts a fragment into the corresponding hole in expected time of 1 compare due to fragments being received in almost sorted order for quick coalescing. The data structure is outlined in [IP DATAGRAM REASSEMBLY ALGORITHMS (RFC815)](https://datatracker.ietf.org/doc/html/rfc815) by David D. Clark.
 
-A small suite of unit tests are and a basic fuzz tester is included.
+This implementation supports overlapping fragments and seen/duplicate fragment suppression.
+
+An example driver program is included in `driver.c` to see how to use the API. We also have a small suite of unit tests and a basic fuzz tester (which has helped tremendously iron out bugs).
