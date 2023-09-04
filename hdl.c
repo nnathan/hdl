@@ -1,7 +1,6 @@
 #include "hdl.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 
 bool hole_descriptor_list_init(struct hole_descriptor_list **hdl) {
     *hdl = calloc(1, sizeof(struct hole_descriptor_list));
@@ -30,7 +29,10 @@ bool hole_descriptor_list_add(
     bool final,
     void *frag
 ) {
-    assert(offset + len > offset);
+    /*
+     * ignore empty fragments
+     */
+    if (len == 0) return true;
 
     int32_t last = offset + len - 1;
 
