@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
     //    if (!hdl) return 1;
     //    shuffle(l, 10, &s);
     //    for(int i=0; i<10; i++) {
-    //        printf("--- inserting (%d,%d)\n", l[i].offset, l[i].len);
+    //        printf("--- inserting (%d,%d)%s\n", l[i].offset, l[i].len, l[i].final ? "F" : "");
     //        hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
     //        print_hole_descriptor_list(hdl);
     //    }
@@ -116,9 +116,9 @@ int main(int argc, char **argv) {
     //    struct hole_descriptor_list *hdl;
     //    hole_descriptor_list_init(&hdl);
     //    if (!hdl) return 1;
-    //    shuffle(l, 50, &s);
+    //    shuffle(l, 10, &s);
     //    for(int i=0; i<10; i++) {
-    //        printf("--- inserting (%d,%d)\n", l[i].offset, l[i].len);
+    //        printf("--- inserting (%d,%d)%s\n", l[i].offset, l[i].len, l[i].final ? "F" : "");
     //        hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
     //        print_hole_descriptor_list(hdl);
     //    }
