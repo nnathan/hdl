@@ -47,57 +47,25 @@ bool hole_descriptor_list_add(
             continue;
         }
 
-        if (final) {
-            hdl->last = offset + len;
-        }
+        if (final) hdl->last = offset + len;
 
-        if (offset < hdl->first) {
+        if (offset <= hdl->first) {
             if (offset + len > hdl->first) hdl->first = offset + len;
             if (!insert_frag(hdl, offset, len, frag)) return false;
             coalesce(hdl, final);
             return true;
         }
 
-        if (offset == hdl->first) {
-            hdl->first = offset + len;
-            if (!insert_frag(hdl, offset, len, frag)) return false;
-            coalesce(hdl, final);
-            return true;
-        }
-
-        assert(offset > hdl->first);
-        if (hdl->next) {
-            if (hdl->next->first <= offset + len) {
-                hdl->last = offset - 1;
-                hdl->next->first = offset + len;
-                hdl->next->last = final ? offset + len : hdl->next->last;
-                if (!insert_frag(hdl->next, offset, len, frag)) return false;
-                coalesce(hdl->next, final);
-                return true;
-            }
-
-
-            assert(hdl->next->first > offset + len);
-            struct hole_descriptor_list *nh = calloc(1, sizeof(struct hole_descriptor_list));
-            if (!nh) return false;
-            nh->next = hdl->next;
-            hdl->next = nh;
-            nh->first = offset + len;
-            nh->last = hdl->last;
-            hdl->last = offset - 1;
-            nh->frag_head = nh->frag_tail = NULL;
-            if (!insert_frag(nh, offset, len, frag)) return false;
-            coalesce(hdl, false);
-            coalesce(nh, final);
-            return true;
-        }
-
-        hdl->next = calloc(1, sizeof(struct hole_descriptor_list));
-        if (!hdl->next) return false;
+        struct hole_descriptor_list *nh = calloc(1, sizeof(struct hole_descriptor_list));
+        if (!nh) return false;
+        nh->next = hdl->next;
+        hdl->next = nh;
+        nh->first = offset + len;
+        nh->last = hdl->last;
         hdl->last = offset - 1;
-        hdl->next->first = offset + len;
-        hdl->next->last = final ? offset + len : INT32_MAX;
-        return insert_frag(hdl->next, offset, len, frag);
+        if (!insert_frag(nh, offset, len, frag)) return false;
+        coalesce(nh, final);
+        return true;
     }
 
     return true;
