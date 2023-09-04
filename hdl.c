@@ -50,7 +50,7 @@ bool hole_descriptor_list_add(
             continue;
         }
 
-        if (final) hdl->last = offset + len;
+        if (final) hdl->last = last;
 
         if (offset <= hdl->first) {
             if (offset + len > hdl->first) hdl->first = offset + len;
@@ -75,7 +75,7 @@ bool hole_descriptor_list_add(
 }
 
 static void coalesce(struct hole_descriptor_list *hdl, bool final) {
-    while (hdl->next && (final ? hdl->first >= hdl->last : hdl->first > hdl->last)) {
+    while (hdl->next && (hdl->first > hdl->last)) {
         hdl->first = (hdl->next->first > hdl->first) ? hdl->next->first : hdl->first;
         if (!final) hdl->last = (hdl->next->last > hdl->last) ? hdl->next->last : hdl->last;
         hdl->frag_tail->next = hdl->next->frag_head;
