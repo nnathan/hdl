@@ -19,7 +19,7 @@ uint64_t gen_seed() {
         uint64_t u64;
     } v;
 
-    for (int i=0; i<8; i++) {
+    for (int i = 0; i < 8; i++) {
         v.bytes[i] = rand() % 256;
     }
 
@@ -48,7 +48,7 @@ struct fragment {
 };
 
 void shuffle(struct fragment *l, int n, uint64_t *seed) {
-    for (int i = n-1; i > 0; i--) {
+    for (int i = n - 1; i > 0; i--) {
         int j = rand_byte(seed) % (i+1);
         struct fragment t = l[i];
         l[i] = l[j];
@@ -62,12 +62,10 @@ struct fragment random_fragment(int32_t max_len, uint64_t *seed) {
         uint32_t u32;
     } v;
 
-    for (int i=0; i < 4; i++) v.bytes[i] = rand_byte(seed);
-
     struct fragment f = {0};
+    for (int i = 0; i < 4; i++) v.bytes[i] = rand_byte(seed);
     f.offset = v.u32 % max_len;
-    for (int i=0; i < 4; i++) v.bytes[i] = rand_byte(seed);
-    // probably be better to select from range (offset,max_len)
+    for (int i = 0; i < 4; i++) v.bytes[i] = rand_byte(seed);
     f.len = v.u32 % (max_len - f.offset) + 1;
     if (f.offset + f.len >= max_len) {
         f.len = max_len - f.offset;
@@ -83,7 +81,7 @@ int main(int argc, char **argv) {
 
     //{
     //    struct fragment *l = calloc(10, sizeof(struct fragment));
-    //    for (int i=0; i < 10; i++) {
+    //    for (int i = 0; i < 10; i++) {
     //        l[i].offset = 1 * i;
     //        l[i].len = 10 - i;
     //        l[i].final = true;
@@ -96,7 +94,7 @@ int main(int argc, char **argv) {
     //    hole_descriptor_list_init(&hdl);
     //    if (!hdl) return 1;
     //    shuffle(l, 10, &s);
-    //    for(int i=0; i<10; i++) {
+    //    for(int i = 0; i < 10; i++) {
     //        printf("--- inserting (%d,%d)%s\n", l[i].offset, l[i].len, l[i].final ? "F" : "");
     //        hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
     //        print_hole_descriptor_list(hdl);
@@ -105,7 +103,7 @@ int main(int argc, char **argv) {
 
     //{
     //    struct fragment *l = calloc(10, sizeof(struct fragment));
-    //    for (int i=0; i < 10; i++) {
+    //    for (int i = 0; i < 10; i++) {
     //        l[i].offset = 10 * i;
     //        l[i].len = 10;
     //    }
@@ -117,7 +115,7 @@ int main(int argc, char **argv) {
     //    hole_descriptor_list_init(&hdl);
     //    if (!hdl) return 1;
     //    shuffle(l, 10, &s);
-    //    for(int i=0; i<10; i++) {
+    //    for(int i = 0; i < 10; i++) {
     //        printf("--- inserting (%d,%d)%s\n", l[i].offset, l[i].len, l[i].final ? "F" : "");
     //        hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
     //        print_hole_descriptor_list(hdl);
@@ -126,7 +124,7 @@ int main(int argc, char **argv) {
 
     {
         struct fragment *l = calloc(50, sizeof(struct fragment));
-        for (int i=0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             l[i].offset = 10 * i;
             l[i].len = 10;
         }
@@ -134,7 +132,7 @@ int main(int argc, char **argv) {
 
         s = gen_seed();
 
-        for (int i=10; i < 50; i++) {
+        for (int i = 10; i < 50; i++) {
             l[i] = random_fragment(100, &s);
         }
 
@@ -142,7 +140,7 @@ int main(int argc, char **argv) {
         hole_descriptor_list_init(&hdl);
         if (!hdl) return 1;
         shuffle(l, 50, &s);
-        for(int i=0; i<50; i++) {
+        for(int i = 0; i < 50; i++) {
             printf("--- inserting (%d,%d)%s\n", l[i].offset, l[i].len, l[i].final ? "F" : "");
             hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
             print_hole_descriptor_list(hdl);

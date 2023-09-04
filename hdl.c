@@ -36,7 +36,7 @@ bool hole_descriptor_list_add(
 
     int32_t last = offset + len - 1;
 
-    while (hdl != NULL) {
+    while (hdl) {
         if (offset > hdl->last) {
             hdl = hdl->next;
             continue;
