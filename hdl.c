@@ -133,3 +133,15 @@ static bool insert_frag(
     SET_FRAG_LIST(l, NULL, frag, len, offset);
     return true;
 }
+
+void hole_descriptor_list_walk(
+    struct hole_descriptor_list *hdl,
+    void (caller)(void *caller_ctx, const void *frag, const int32_t offset, const int32_t len),
+    void *caller_ctx
+) {
+    while (hdl) {
+        for (struct frag_list *fl = hdl->frag_head; fl; fl = fl->next)
+            caller(caller_ctx, fl->frag, fl->offset, fl->len);
+        hdl = hdl->next;
+    }
+}

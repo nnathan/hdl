@@ -19,6 +19,10 @@ void print_hole_descriptor_list(struct hole_descriptor_list *hdl) {
     }
 }
 
+void print_frag(void *caller_ctx, const void *frag, const int32_t offset, const int32_t len) {
+    printf("* (%d,%d,%p)\n", offset, len, frag);
+}
+
 #define HDL_ADD(hdl, off, len, final, verbose)                       \
   do {                                                               \
     printf("--- inserting (%d,%d)%s\n", off, len, final ? "F" : ""); \
@@ -45,5 +49,6 @@ int main(int argc, char **argv) {
     HDL_ADD(hdl, 13, 32, false, false);
     HDL_ADD(hdl, 44, 56, true, true);
 
+    hole_descriptor_list_walk(hdl, print_frag, NULL);
   return 0;
 }

@@ -30,4 +30,10 @@ bool hole_descriptor_list_add(
 );
 
 bool hole_descriptor_list_complete(struct hole_descriptor_list *hdl);
+
+void hole_descriptor_list_walk(
+    struct hole_descriptor_list *hdl,
+    void (caller)(void *caller_ctx, const void *data, const int32_t offset, const int32_t len),
+    void *caller_ctx
+);
 #endif
