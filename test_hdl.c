@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
         PRINT_FRAGS(l, n);
 
         for (int i=0; i<n; i++) {
-            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+            assert(hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL));
         }
 
         free(l);
@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
         PRINT_FRAGS(l, n);
 
         for (int i=0; i<n; i++) {
-            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+            assert(hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL));
         }
 
         free(l);
@@ -119,7 +119,7 @@ int main(int argc, char **argv) {
         PRINT_FRAGS(l, n);
 
         for (int i=0; i<n; i++) {
-            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+            assert(hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL));
         }
 
         free(l);
@@ -157,7 +157,7 @@ int main(int argc, char **argv) {
         PRINT_FRAGS(l, n);
 
         for (int i=0; i<n; i++) {
-            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+            assert(hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL));
         }
 
         free(l);
@@ -201,7 +201,7 @@ int main(int argc, char **argv) {
         PRINT_FRAGS(l, n);
 
         for (int i=0; i<n; i++) {
-            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+            assert(hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL));
         }
 
         free(l);
@@ -246,7 +246,7 @@ int main(int argc, char **argv) {
         PRINT_FRAGS(l, n);
 
         for (int i=0; i<n; i++) {
-            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+            assert(hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL));
         }
 
         free(l);
@@ -292,7 +292,7 @@ int main(int argc, char **argv) {
         PRINT_FRAGS(l, n);
 
         for (int i=0; i<n; i++) {
-            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+            assert(hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL));
         }
 
         free(l);
@@ -334,7 +334,7 @@ int main(int argc, char **argv) {
         PRINT_FRAGS(l, n);
 
         for (int i=0; i<n; i++) {
-            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+            assert(hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL));
         }
 
         free(l);
@@ -374,7 +374,7 @@ int main(int argc, char **argv) {
         PRINT_FRAGS(l, n);
 
         for (int i=0; i<n; i++) {
-            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+            assert(hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL));
         }
 
         free(l);
@@ -414,7 +414,7 @@ int main(int argc, char **argv) {
         PRINT_FRAGS(l, n);
 
         for (int i=0; i<n; i++) {
-            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+            assert(hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL));
         }
 
         free(l);
@@ -466,7 +466,7 @@ int main(int argc, char **argv) {
         PRINT_FRAGS(l, n);
 
         for (int i=0; i<n; i++) {
-            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+            assert(hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL));
         }
 
         free(l);
@@ -518,7 +518,7 @@ int main(int argc, char **argv) {
         PRINT_FRAGS(l, n);
 
         for (int i=0; i<n; i++) {
-            hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL);
+            assert(hole_descriptor_list_add(hdl, l[i].offset, l[i].len, l[i].final, NULL));
         }
 
         free(l);
