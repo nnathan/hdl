@@ -117,22 +117,18 @@ static bool insert_frag(
                 prev->next = l;
             }
             SET_FRAG_LIST(l, fl, frag, len, offset);
-            break;
+            return true;
         }
 
-        if (fl->next) {
-            prev = fl;
-            fl = fl->next;
-            continue;
-        }
-
-        struct frag_list *l = malloc(sizeof(struct frag_list));
-        if (!l) return false;
-        fl->next = l;
-        hdl->frag_tail = l;
-        SET_FRAG_LIST(l, NULL, frag, len, offset);
-        break;
+        prev = fl;
+        fl = fl->next;
     }
+
+    struct frag_list *l = malloc(sizeof(struct frag_list));
+    if (!l) return false;
+    prev->next = l;
+    hdl->frag_tail = l;
+    SET_FRAG_LIST(l, NULL, frag, len, offset);
 
     return true;
 }
