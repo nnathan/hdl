@@ -75,6 +75,23 @@ struct fragment random_fragment(int32_t max_len, uint64_t *seed) {
     return f;
 }
 
+void print_hole_descriptor_list(struct hole_descriptor_list *hdl) {
+    if (!hdl) {
+        printf("<empty>\n");
+    }
+
+    while (hdl) {
+        printf("%10s: %10d\n", "first", hdl->first);
+        printf("%10s: %10d\n", "last", hdl->last);
+
+        for (struct frag_list *fl = hdl->frag_head; fl != NULL; fl = fl->next) {
+            printf("%10s (%d,%d)\n", "--", fl->offset, fl->len);
+        }
+
+        hdl = hdl->next;
+    }
+}
+
 int main(int argc, char **argv) {
     uint64_t s;
     srand(mix(clock(), getpid(), time(NULL)));

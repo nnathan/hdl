@@ -30,6 +30,4 @@ bool hole_descriptor_list_add(
 );
 
 bool hole_descriptor_list_complete(struct hole_descriptor_list *hdl);
-
-void print_hole_descriptor_list(struct hole_descriptor_list *hdl);
 #endif

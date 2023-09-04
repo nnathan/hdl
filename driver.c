@@ -2,6 +2,23 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+void print_hole_descriptor_list(struct hole_descriptor_list *hdl) {
+    if (!hdl) {
+        printf("<empty>\n");
+    }
+
+    while (hdl) {
+        printf("%10s: %10d\n", "first", hdl->first);
+        printf("%10s: %10d\n", "last", hdl->last);
+
+        for (struct frag_list *fl = hdl->frag_head; fl != NULL; fl = fl->next) {
+            printf("%10s (%d,%d)\n", "--", fl->offset, fl->len);
+        }
+
+        hdl = hdl->next;
+    }
+}
+
 #define HDL_ADD(hdl, off, len, final, verbose)                       \
   do {                                                               \
     printf("--- inserting (%d,%d)%s\n", off, len, final ? "F" : ""); \
