@@ -1,6 +1,7 @@
 #include "hdl.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include <assert.h>
 
 void print_hole_descriptor_list(struct hole_descriptor_list *hdl) {
     if (!hdl) {
@@ -26,7 +27,7 @@ void print_frag(void *caller_ctx, const void *frag, const int32_t offset, const 
 #define HDL_ADD(hdl, off, len, final, verbose)                       \
   do {                                                               \
     printf("--- inserting (%d,%d)%s\n", off, len, final ? "F" : ""); \
-    hole_descriptor_list_add(hdl, off, len, final, NULL);            \
+    assert(hole_descriptor_list_add(hdl, off, len, final, NULL));    \
     if (verbose) print_hole_descriptor_list(hdl);                    \
   } while(0)
 
@@ -48,7 +49,9 @@ int main(int argc, char **argv) {
     HDL_ADD(hdl, 87, 9, false, false);
     HDL_ADD(hdl, 13, 32, false, false);
     HDL_ADD(hdl, 44, 56, true, true);
-
+    HDL_ADD(hdl, 0, 13, false, true);
+    assert(hole_descriptor_list_complete(hdl));
     hole_descriptor_list_walk(hdl, print_frag, NULL);
+
   return 0;
 }
