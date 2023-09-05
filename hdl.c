@@ -10,7 +10,7 @@ bool hole_descriptor_list_init(struct hole_descriptor_list **hdl) {
 }
 
 bool hole_descriptor_list_complete(struct hole_descriptor_list *hdl) {
-    return (!hdl->next && hdl->first >= hdl->last);
+    return (!hdl->next && hdl->first > hdl->last);
 }
 
 static bool insert_frag(
