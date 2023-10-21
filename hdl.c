@@ -2,14 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-bool hole_descriptor_list_init(struct hole_descriptor_list **hdl) {
+bool hole_descriptor_list_init(struct hole_descriptor_list **hdl)
+{
     *hdl = calloc(1, sizeof(struct hole_descriptor_list));
     if (*hdl == NULL) return false;
     (*hdl)->last = INT32_MAX;
     return true;
 }
 
-bool hole_descriptor_list_complete(struct hole_descriptor_list *hdl) {
+bool hole_descriptor_list_complete(struct hole_descriptor_list *hdl)
+{
     return (!hdl->next && hdl->first > hdl->last);
 }
 
@@ -28,7 +30,8 @@ bool hole_descriptor_list_add(
     int32_t len,
     bool final,
     void *frag
-) {
+)
+{
     /*
      * ignore empty fragments
      */
@@ -74,7 +77,8 @@ bool hole_descriptor_list_add(
     return true;
 }
 
-static void coalesce(struct hole_descriptor_list *hdl, bool final) {
+static void coalesce(struct hole_descriptor_list *hdl, bool final)
+{
     while (hdl->next && (hdl->first > hdl->last)) {
         hdl->first = (hdl->next->first > hdl->first) ? hdl->next->first : hdl->first;
         if (!final) hdl->last = (hdl->next->last > hdl->last) ? hdl->next->last : hdl->last;
@@ -99,7 +103,8 @@ static bool insert_frag(
     int32_t offset,
     int32_t len,
     void *frag
-) {
+)
+{
     struct frag_list *fl = hdl->frag_head;
 
     if (!fl) {
@@ -138,7 +143,8 @@ void hole_descriptor_list_walk(
     struct hole_descriptor_list *hdl,
     void (caller)(void *caller_ctx, const void *frag, const int32_t offset, const int32_t len),
     void *caller_ctx
-) {
+)
+{
     while (hdl) {
         for (struct frag_list *fl = hdl->frag_head; fl; fl = fl->next)
             caller(caller_ctx, fl->frag, fl->offset, fl->len);
@@ -146,7 +152,8 @@ void hole_descriptor_list_walk(
     }
 }
 
-void hole_descriptor_list_destroy(struct hole_descriptor_list *hdl) {
+void hole_descriptor_list_destroy(struct hole_descriptor_list *hdl)
+{
     while (hdl) {
         struct frag_list *fl = hdl->frag_head;
         while (fl) {

@@ -6,7 +6,8 @@
 #include <time.h>
 #include <assert.h>
 
-struct fragment {
+struct fragment
+{
     int32_t offset;
     int32_t len;
     bool final;
@@ -26,9 +27,8 @@ struct fragment {
     printf("\n");                                      \
   } while (0);
 
-
-
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
 
     // --- (0,1)F
     {

@@ -13,7 +13,8 @@ static uint8_t rand_byte(uint64_t *s)
     return *s >> 56;
 }
 
-uint64_t gen_seed() {
+uint64_t gen_seed()
+{
     union {
         uint8_t bytes[8];
         uint64_t u64;
@@ -41,13 +42,15 @@ unsigned long mix(unsigned long a, unsigned long b, unsigned long c)
     return c;
 }
 
-struct fragment {
+struct fragment
+{
     int32_t offset;
     int32_t len;
     bool final;
 };
 
-void shuffle(struct fragment *l, int n, uint64_t *seed) {
+void shuffle(struct fragment *l, int n, uint64_t *seed)
+{
     for (int i = n - 1; i > 0; i--) {
         int j = rand_byte(seed) % (i+1);
         struct fragment t = l[i];
@@ -56,7 +59,8 @@ void shuffle(struct fragment *l, int n, uint64_t *seed) {
     }
 }
 
-struct fragment random_fragment(int32_t max_len, uint64_t *seed) {
+struct fragment random_fragment(int32_t max_len, uint64_t *seed)
+{
     union {
         uint8_t bytes[4];
         uint32_t u32;
@@ -75,7 +79,8 @@ struct fragment random_fragment(int32_t max_len, uint64_t *seed) {
     return f;
 }
 
-void print_hole_descriptor_list(struct hole_descriptor_list *hdl) {
+void print_hole_descriptor_list(struct hole_descriptor_list *hdl)
+{
     if (!hdl) {
         printf("<empty>\n");
     }
@@ -92,7 +97,8 @@ void print_hole_descriptor_list(struct hole_descriptor_list *hdl) {
     }
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     uint64_t s;
     srand(mix(clock(), getpid(), time(NULL)));
 

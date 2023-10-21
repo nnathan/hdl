@@ -3,7 +3,8 @@
 #include <stdbool.h>
 #include <assert.h>
 
-void print_hole_descriptor_list(struct hole_descriptor_list *hdl) {
+void print_hole_descriptor_list(struct hole_descriptor_list *hdl)
+{
     if (!hdl) {
         printf("<empty>\n");
     }
@@ -20,7 +21,8 @@ void print_hole_descriptor_list(struct hole_descriptor_list *hdl) {
     }
 }
 
-void print_frag(void *caller_ctx, const void *frag, const int32_t offset, const int32_t len) {
+void print_frag(void *caller_ctx, const void *frag, const int32_t offset, const int32_t len)
+{
     printf("* (%d,%d,%p)\n", offset, len, frag);
 }
 
@@ -31,7 +33,8 @@ void print_frag(void *caller_ctx, const void *frag, const int32_t offset, const 
     if (verbose) print_hole_descriptor_list(hdl);                    \
   } while(0)
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     struct hole_descriptor_list *hdl;
 
     if (!hole_descriptor_list_init(&hdl)) {
